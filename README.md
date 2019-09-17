@@ -17,4 +17,4 @@ $ python objectTracking.py --video test.mp4 --tracker mosse
   - -v, --video : 함께 가지고 있는 영상을 통한 트랙킹 시 영상 파일을 불러오겠다는 옵션
   - -t, --tracker : 트래킹 수준을 선택하는 옵션, csrt는 FPS는 느리지만, 최고수준의 트래킹을 함, kcf는 보통 수준의 FPS와 낮은 수준의 트래킹을 함, mosse는 최고 속도를 내야할 때 사용하지만 트래킹 수준은 매우 낮음  
 
-
+4. 라이브러리는 cv2, imutils가 설치되어 있어야 함  
