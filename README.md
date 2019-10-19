@@ -18,6 +18,9 @@ $ python objectTracking.py --video test.mp4 --tracker mosse
   - -t, --tracker : 트래킹 수준을 선택하는 옵션, csrt는 FPS는 느리지만, 최고수준의 트래킹을 함, kcf는 보통 수준의 FPS와 낮은 수준의 트래킹을 함, mosse는 최고 속도를 내야할 때 사용하지만 트래킹 수준은 매우 낮음  
 
 4. 라이브러리는 cv2, imutils가 설치되어 있어야 함  
+  - AttributeError: module 'cv2.cv2' has no attribute 'TrackerCSRT_create' 오류가 날 때는 아래 명령어를 실행하여 추가 패키지를 설치함  
+  - pip install opencv-contrib-python  
+  
 
 
 원 자료 출처 링크 : [클릭](https://www.pyimagesearch.com/2018/07/30/opencv-object-tracking/)
