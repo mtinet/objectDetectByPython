@@ -5,6 +5,13 @@ import argparse
 import imutils
 import time
 import cv2
+import serial
+
+#setup serial communication
+ser = serial.Serial(
+    port='COM13', # check your Serial port
+    baudrate=115200,
+)
 
 # construct the argument parser and parse the arguments
 ap = argparse.ArgumentParser()
@@ -14,6 +21,8 @@ ap.add_argument("-t", "--tracker", type=str, default="kcf",
 	help="OpenCV object tracker type")
 args = vars(ap.parse_args())
 
+# 시리얼로 데이터를 보내는 주기에 사용하는 변수
+term = 0
 
 # extract the OpenCV version info
 (major, minor) = cv2.__version__.split(".")[:2]
@@ -87,10 +96,24 @@ while True:
 		(success, box) = tracker.update(frame)
 
 		# check to see if the tracking was a success
+
 		if success:
 			(x, y, w, h) = [int(v) for v in box]
 			cv2.rectangle(frame, (x, y), (x + w, y + h),
 				(0, 255, 0), 2)
+
+			# check location and size of green box
+			# print(x, y, w, h)
+			# ser.write(x)
+			# print(x)
+
+			# ckeck sending period
+			term = term + 1
+			# send value of 'x', 1 of ten times
+			if term == 10 :
+				ser.write(x)
+				print('sended data : {}'.format(x))
+				term = 0
 
 		# update the FPS counter
 		fps.update()
