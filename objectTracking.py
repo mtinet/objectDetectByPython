@@ -9,7 +9,9 @@ import serial
 
 #setup serial communication
 ser = serial.Serial(
-    port='COM13', # check your Serial port
+    # check your Serial port
+    port='/dev/cu.usbmodem141201',
+    # port='COM13',
     baudrate=115200,
 )
 
@@ -23,6 +25,7 @@ args = vars(ap.parse_args())
 
 # 시리얼로 데이터를 보내는 주기에 사용하는 변수
 term = 0
+middlepoint = 0
 
 # extract the OpenCV version info
 (major, minor) = cv2.__version__.split(".")[:2]
@@ -103,16 +106,15 @@ while True:
 				(0, 255, 0), 2)
 
 			# check location and size of green box
-			# print(x, y, w, h)
+			print(x, y, w, h)
+			middlepoint = int(x+w/2)
 			# ser.write(x)
-			# print(x)
-
 			# ckeck sending period
 			term = term + 1
 			# send value of 'x', 1 of ten times
 			if term == 10 :
-				ser.write(x)
-				print('sended data : {}'.format(x))
+				ser.write(middlepoint)
+				print('sended data : {}'.format(middlepoint))
 				term = 0
 
 		# update the FPS counter
