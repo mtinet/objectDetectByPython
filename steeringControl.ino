@@ -10,6 +10,7 @@ int inputVal = 0;
 int potValue = 0;
 int divideValue = 0;
 float integralTime = 0;
+float benchmark = 700;
 
 void setup() {
   pinMode(in1, OUTPUT);
@@ -34,10 +35,16 @@ void loop() {
     Serial.print(integralTime);
     
     if (divideValue > 0) {
+      if (integralTime < 0) {
+        integralTime = 0;
+      }
       steeringRight(divideValue);
     } else if (divideValue == 0) {
       steeringNeutral();
     } else {
+      if (integralTime > 0) {
+        integralTime = 0;
+      }
       steeringLeft(divideValue);
     }
   }
@@ -46,13 +53,13 @@ void loop() {
 void steeringRight(int SR) {
   SR = abs(SR);
   integralTime += divideValue;
-  if (integralTime < 1000 && integralTime > 0) {
+  if (integralTime < benchmark && integralTime > 0) {
     Serial.print(", SR Val = ");
     Serial.println(SR);
     analogWrite(in1, SR);
     analogWrite(in2, 0);
-  } else if (integralTime >= 1000) {
-    integralTime = 1000;
+  } else if (integralTime >= benchmark) {
+    integralTime = benchmark;
     Serial.print(", integralTime = ");
     Serial.print(integralTime);
     Serial.println(", Right End Position"); 
@@ -64,13 +71,13 @@ void steeringRight(int SR) {
 void steeringLeft(int SL) {
   SL = abs(SL);
   integralTime += divideValue;
-  if (integralTime > -1000 && integralTime < 0) {
+  if (integralTime > -benchmark && integralTime < 0) {
     Serial.print(", SL Val = ");
     Serial.println(SL);
     analogWrite(in1, 0);
     analogWrite(in2, SL);
-  } else if (integralTime <= -1000) {
-    integralTime = -1000;
+  } else if (integralTime <= -benchmark) {
+    integralTime = -benchmark;
     Serial.print(", integralTime = ");
     Serial.print(integralTime);
     Serial.println(", Left End Position");
@@ -83,4 +90,5 @@ void steeringNeutral() {
   integralTime += divideValue;
   analogWrite(in1, 0);
   analogWrite(in2, 0);
+  Serial.println("");
 }
