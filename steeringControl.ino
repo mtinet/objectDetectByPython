@@ -30,12 +30,12 @@ void setup() {
   Serial.begin(9600);
   while (!Serial); 
   Serial.println("Input Steering Range : 0 to 500"); 
-    Serial.print("previousVal = ");
-    Serial.print(previousVal);
-    Serial.print(", inputVal = ");
-    Serial.print(inputVal);
-    Serial.print(", currentVal = ");
-    Serial.println(currentVal);
+  Serial.print("previousVal = ");
+  Serial.print(previousVal);
+  Serial.print(", inputVal = ");
+  Serial.print(inputVal);
+  Serial.print(", currentVal = ");
+  Serial.println(currentVal);
 }
 
 void loop() {
@@ -69,9 +69,11 @@ void loop() {
   
   
   if (Serial.available()) {
-    int inputVal = Serial.parseInt(); 
+//    int inputVal = Serial.parseInt(); // str로 자료가 넘어올 때 사용
+    int inputVal = Serial.read(); // byte로 자료가 넘어올 때 사용
     inputVal = constrain(inputVal, 0, 500);
     currentVal = previousVal - inputVal;
+    currentVal *= 100;
     Serial.print("previousVal = ");
     Serial.print(previousVal);
     Serial.print(", inputVal = ");
