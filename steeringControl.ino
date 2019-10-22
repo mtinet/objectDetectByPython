@@ -1,93 +1,118 @@
 #include <stdlib.h>
-
-
 #define in1 9
 #define in2 10
 
 int SR = 0;
 int SL = 0;
+
+const int buttonPinR = 2;
+const int buttonPinL = 3;
+const int LED = 13;
+
+int buttonStateR = 0;
+int buttonStateL = 0;
+
+int previousVal = 250;
 int inputVal = 0;
-int potValue = 0;
-int divideValue = 0;
-float integralTime = 0;
-float benchmark = 700;
+int currentVal = 0;
 
 void setup() {
   pinMode(in1, OUTPUT);
   pinMode(in2, OUTPUT);
   digitalWrite(in1, LOW);
   digitalWrite(in2, LOW);
+
+  pinMode(buttonPinR, INPUT_PULLUP);
+  pinMode(buttonPinL, INPUT_PULLUP);
+
+  pinMode(LED, OUTPUT);
+  
   Serial.begin(9600);
   while (!Serial); 
-  Serial.println("Input Steering Angle : 0 to 500"); 
-}
-void loop() {
-  if (Serial.available()) {
-    int potValue = Serial.parseInt();   
-    Serial.print("potValue = ");
-    Serial.print(potValue);
-    
-    divideValue = potValue - 250;
-    Serial.print(", divideValue = ");
-    Serial.print(divideValue);
-    
-    Serial.print(", integralTime = ");
-    Serial.print(integralTime);
-    
-    if (divideValue > 0) {
-      if (integralTime < 0) {
-        integralTime = 0;
-      }
-      steeringRight(divideValue);
-    } else if (divideValue == 0) {
-      steeringNeutral();
-    } else {
-      if (integralTime > 0) {
-        integralTime = 0;
-      }
-      steeringLeft(divideValue);
-    }
-  }
+  Serial.println("Input Steering Range : 0 to 500"); 
+    Serial.print("previousVal = ");
+    Serial.print(previousVal);
+    Serial.print(", inputVal = ");
+    Serial.print(inputVal);
+    Serial.print(", currentVal = ");
+    Serial.println(currentVal);
 }
 
-void steeringRight(int SR) {
-  SR = abs(SR);
-  integralTime += divideValue;
-  if (integralTime < benchmark && integralTime > 0) {
-    Serial.print(", SR Val = ");
-    Serial.println(SR);
-    analogWrite(in1, SR);
-    analogWrite(in2, 0);
-  } else if (integralTime >= benchmark) {
-    integralTime = benchmark;
-    Serial.print(", integralTime = ");
-    Serial.print(integralTime);
-    Serial.println(", Right End Position"); 
+void loop() {
+  buttonStateR = digitalRead(buttonPinR);
+  buttonStateL = digitalRead(buttonPinL);
+  digitalWrite(13, LOW);
+  Serial.print(buttonStateR);
+  Serial.print("  ");
+  Serial.println(buttonStateL);
+  
+  if (buttonStateR == 1) {
+    analogWrite(in1, 0);
+    analogWrite(in2, 255);
+    delay(100);
     analogWrite(in1, 0);
     analogWrite(in2, 0);
+    
+    Serial.println("Right end");
+    digitalWrite(LED, HIGH);
   }
+  if (buttonStateL == 1) {
+    analogWrite(in1, 255);
+    analogWrite(in2, 0);
+    delay(100);
+    analogWrite(in1, 0);
+    analogWrite(in2, 0);
+    
+    Serial.println("Left end");
+    digitalWrite(LED, HIGH);
+  }
+  
+  
+  if (Serial.available()) {
+    int inputVal = Serial.parseInt(); 
+    inputVal = constrain(inputVal, 0, 500);
+    currentVal = previousVal - inputVal;
+    Serial.print("previousVal = ");
+    Serial.print(previousVal);
+    Serial.print(", inputVal = ");
+    Serial.print(inputVal);
+    Serial.print(", currentVal = ");
+    Serial.print(currentVal);
+    
+    if (currentVal > 0) {
+      steeringLeft(currentVal);
+      previousVal = inputVal;
+    } else if (currentVal < 0 ) {
+      steeringRight(-currentVal);
+      previousVal = inputVal;
+    } else if(currentVal == 0) {
+      steeringNeutral();
+    }
+  }    
+}
+  
+  
+void steeringRight(int SR) {
+  Serial.print(", SR Val = ");
+  Serial.println(SR);
+  analogWrite(in1, 255);
+  analogWrite(in2, 0);
+  delay(SR);
+  analogWrite(in1, 0);
+  analogWrite(in2, 0);
 }
 
 void steeringLeft(int SL) {
-  SL = abs(SL);
-  integralTime += divideValue;
-  if (integralTime > -benchmark && integralTime < 0) {
-    Serial.print(", SL Val = ");
-    Serial.println(SL);
-    analogWrite(in1, 0);
-    analogWrite(in2, SL);
-  } else if (integralTime <= -benchmark) {
-    integralTime = -benchmark;
-    Serial.print(", integralTime = ");
-    Serial.print(integralTime);
-    Serial.println(", Left End Position");
-    analogWrite(in1, 0);
-    analogWrite(in2, 0);
-  }
+  Serial.print(", SL Val = ");
+  Serial.println(SL);
+  analogWrite(in1, 0);
+  analogWrite(in2, 255);
+  delay(SL);
+  analogWrite(in1, 0);
+  analogWrite(in2, 0);
 }
 
 void steeringNeutral() {
-  integralTime += divideValue;
   analogWrite(in1, 0);
   analogWrite(in2, 0);
   Serial.println("");
