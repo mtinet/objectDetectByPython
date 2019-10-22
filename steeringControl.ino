@@ -27,7 +27,7 @@ void setup() {
 
   pinMode(LED, OUTPUT);
   
-  Serial.begin(9600);
+  Serial.begin(115200);
   while (!Serial); 
   Serial.println("Input Steering Range : 0 to 500"); 
   Serial.print("previousVal = ");
