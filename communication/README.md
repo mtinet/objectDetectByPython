@@ -5,10 +5,12 @@
  - .encode("utf-8")을 이용해 바이트의 형태로 전송될 수 있도록 한다.  
  - 전송한다.  
  
- ex) 보내는 부분 예제  
-  middlepoint = int(x+w/2)
-  middlepoint = (str(middlepoint)+'\n').encode("utf-8")
-  ser.write(middlepoint)
+ ex) 보내는 부분 예제 
+ ~~~
+  middlepoint = int(x+w/2)  
+  middlepoint = (str(middlepoint)+'\n').encode("utf-8")  
+  ser.write(middlepoint)  
+  ~~~
       
 ## Arduino 파트
  - '\n'이 붙은 부분까지 연속으로 받아서 문자열로 만든다.  
@@ -17,8 +19,10 @@
  - mySerial이라고 되어 있는 부분은 소프트웨어 시리얼로 바이트 자료를 받을 때에 한하며, 하드웨어 시리얼을 사용할 때는 Serial로 수정하여 사용한다.  
  
  ex) 받는 부분 예제
+ ~~~
   String a = mySerial.readStringUntil('\n');
   int b = a.toInt();
+ ~~~
  
 ## Arduino to Arduino 파트  
  - 파이썬으로부터 넘어온 바이트 자료를 다른 아두이노에 바이트 자료로 넘긴다.  
