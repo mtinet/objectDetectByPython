@@ -6,13 +6,14 @@ import imutils
 import time
 import cv2
 import serial
+import urllib.request
 
 #setup serial communication
 ser = serial.Serial(
     # check your Serial port
     port='/dev/cu.usbmodem141201',
     # port='COM13',
-    baudrate=115200,
+    baudrate=9600,
 )
 
 # construct the argument parser and parse the arguments
@@ -106,16 +107,22 @@ while True:
 				(0, 255, 0), 2)
 
 			# check location and size of green box
-			print(x, y, w, h)
+			# print(x, y, w, h)
 			middlepoint = int(x+w/2)
-			# ser.write(x)
+			#middlepoint = str(middlepoint)
+			middlepoint = (str(middlepoint)+'\n').encode("utf-8")
+			print('sended data : {}'.format(middlepoint), end='\n')
+			ser.write(middlepoint)
+
 			# ckeck sending period
-			term = term + 1
+			#term = term + 1
 			# send value of 'x', 1 of ten times
-			if term == 10 :
-				ser.write(middlepoint)
-				print('sended data : {}'.format(middlepoint))
-				term = 0
+			#if term == 10 :
+			#	ser.write(middlepoint)
+			#	print('sended data : {}'.format(middlepoint), end=' ')
+			#	term = 0
+			#	print(type(middlepoint))
+
 
 		# update the FPS counter
 		fps.update()
