@@ -107,7 +107,7 @@ while True:
 				(0, 255, 0), 2)
 
 			# check location and size of green box
-			# print(x, y, w, h)
+			print(x, y, w, h)
 			middlepoint = int((x+w/2)/2)
 			#middlepoint = str(middlepoint)
 			#middlepoint = (str(middlepoint)+'\n').encode("utf-8")
