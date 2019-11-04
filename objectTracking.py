@@ -11,7 +11,7 @@ import urllib.request
 #setup serial communication
 ser = serial.Serial(
     # check your Serial port
-    port='/dev/cu.usbmodem141201',
+    port='COM15',
     # port='COM13',
     baudrate=9600,
 )
@@ -108,11 +108,11 @@ while True:
 
 			# check location and size of green box
 			# print(x, y, w, h)
-			middlepoint = int(x+w/2)
+			middlepoint = int((x+w/2)/2)
 			#middlepoint = str(middlepoint)
-			middlepoint = (str(middlepoint)+'\n').encode("utf-8")
+			#middlepoint = (str(middlepoint)+'\n').encode("utf-8")
 			print('sended data : {}'.format(middlepoint), end='\n')
-			ser.write(middlepoint)
+			ser.write([middlepoint])
 
 			# ckeck sending period
 			#term = term + 1
