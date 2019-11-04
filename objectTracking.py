@@ -11,7 +11,7 @@ import urllib.request
 #setup serial communication
 ser = serial.Serial(
     # check your Serial port
-    port='COM15',
+    port='/dev/cu.usbmodem141201',
     # port='COM13',
     baudrate=9600,
 )
