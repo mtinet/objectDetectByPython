@@ -1,20 +1,23 @@
-#include <stdlib.h>
+#include <SoftwareSerial.h>
+
 #define in1 9
 #define in2 10
+
+SoftwareSerial mySerial(2, 3);
+
+int previousVal = 127;
+int inputVal = 0;
+int currentVal = 0;
 
 int SR = 0;
 int SL = 0;
 
-const int buttonPinR = 2;
-const int buttonPinL = 3;
+const int buttonPinR = 4;
+const int buttonPinL = 5;
 const int LED = 13;
 
 int buttonStateR = 0;
 int buttonStateL = 0;
-
-int previousVal = 250;
-int inputVal = 0;
-int currentVal = 0;
 
 void setup() {
   pinMode(in1, OUTPUT);
@@ -26,25 +29,16 @@ void setup() {
   pinMode(buttonPinL, INPUT_PULLUP);
 
   pinMode(LED, OUTPUT);
-  
-  Serial.begin(115200);
-  while (!Serial); 
-  Serial.println("Input Steering Range : 0 to 500"); 
-  Serial.print("previousVal = ");
-  Serial.print(previousVal);
-  Serial.print(", inputVal = ");
-  Serial.print(inputVal);
-  Serial.print(", currentVal = ");
-  Serial.println(currentVal);
+
+  Serial.begin(9600);
+  mySerial.begin(9600);
+  mySerial.write("Hello, world?");
 }
 
 void loop() {
   buttonStateR = digitalRead(buttonPinR);
   buttonStateL = digitalRead(buttonPinL);
   digitalWrite(13, LOW);
-  Serial.print(buttonStateR);
-  Serial.print("  ");
-  Serial.println(buttonStateL);
   
   if (buttonStateR == 1) {
     analogWrite(in1, 0);
@@ -67,37 +61,32 @@ void loop() {
     digitalWrite(LED, HIGH);
   }
   
-  
   if (Serial.available()) {
-//    int inputVal = Serial.parseInt(); // str로 자료가 넘어올 때 사용
-    int inputVal = Serial.read(); // byte로 자료가 넘어올 때 사용
-    inputVal = constrain(inputVal, 0, 500);
+    inputVal = Serial.read();
+//    mySerial.write(inputVal);
     currentVal = previousVal - inputVal;
-    currentVal *= 100;
-    Serial.print("previousVal = ");
-    Serial.print(previousVal);
-    Serial.print(", inputVal = ");
-    Serial.print(inputVal);
-    Serial.print(", currentVal = ");
-    Serial.print(currentVal);
-    
+    previousVal = inputVal;
+    mySerial.write(currentVal);
+
     if (currentVal > 0) {
-      steeringLeft(currentVal);
-      previousVal = inputVal;
-    } else if (currentVal < 0 ) {
-      steeringRight(-currentVal);
-      previousVal = inputVal;
-    } else if(currentVal == 0) {
-      steeringNeutral();
+      analogWrite(in1, 0);
+      analogWrite(in2, 100);
     }
-  }    
+    if (currentVal < 0) {
+      analogWrite(in1, 100);
+      analogWrite(in2, 0);
+    }
+    if (currentVal == 0) {
+      analogWrite(in1, 0);
+      analogWrite(in2, 0);
+    }
+  }
 }
-  
-  
+
 void steeringRight(int SR) {
-  Serial.print(", SR Val = ");
-  Serial.println(SR);
-  analogWrite(in1, 255);
+  //Serial.print(", SR Val = ");
+  //Serial.println(SR);
+  analogWrite(in1, 100);
   analogWrite(in2, 0);
   delay(SR);
   analogWrite(in1, 0);
@@ -105,10 +94,10 @@ void steeringRight(int SR) {
 }
 
 void steeringLeft(int SL) {
-  Serial.print(", SL Val = ");
-  Serial.println(SL);
+  //Serial.print(", SL Val = ");
+  //Serial.println(SL);
   analogWrite(in1, 0);
-  analogWrite(in2, 255);
+  analogWrite(in2, 100);
   delay(SL);
   analogWrite(in1, 0);
   analogWrite(in2, 0);
@@ -117,5 +106,5 @@ void steeringLeft(int SL) {
 void steeringNeutral() {
   analogWrite(in1, 0);
   analogWrite(in2, 0);
-  Serial.println("");
+  //Serial.println("");
 }
