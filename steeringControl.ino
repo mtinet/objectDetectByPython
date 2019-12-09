@@ -70,10 +70,10 @@ void loop() {
 
     if (currentVal > 0) {
       analogWrite(in1, 0);
-      analogWrite(in2, 100);
+      analogWrite(in2, 255);
     }
     if (currentVal < 0) {
-      analogWrite(in1, 100);
+      analogWrite(in1, 255);
       analogWrite(in2, 0);
     }
     if (currentVal == 0) {
@@ -86,7 +86,7 @@ void loop() {
 void steeringRight(int SR) {
   //Serial.print(", SR Val = ");
   //Serial.println(SR);
-  analogWrite(in1, 100);
+  analogWrite(in1, 255);
   analogWrite(in2, 0);
   delay(SR);
   analogWrite(in1, 0);
@@ -97,7 +97,7 @@ void steeringLeft(int SL) {
   //Serial.print(", SL Val = ");
   //Serial.println(SL);
   analogWrite(in1, 0);
-  analogWrite(in2, 100);
+  analogWrite(in2, 255);
   delay(SL);
   analogWrite(in1, 0);
   analogWrite(in2, 0);
