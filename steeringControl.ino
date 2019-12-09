@@ -32,7 +32,7 @@ void setup() {
 
   Serial.begin(9600);
   mySerial.begin(9600);
-  mySerial.write("Hello, world?");
+  //mySerial.write("Hello, world?");
 }
 
 void loop() {
@@ -47,8 +47,9 @@ void loop() {
     analogWrite(in1, 0);
     analogWrite(in2, 0);
     
-    Serial.println("Right end");
+    //Serial.println("Right end");
     digitalWrite(LED, HIGH);
+    currentVal = 127;
   }
   if (buttonStateL == 1) {
     analogWrite(in1, 255);
@@ -57,15 +58,16 @@ void loop() {
     analogWrite(in1, 0);
     analogWrite(in2, 0);
     
-    Serial.println("Left end");
+    //Serial.println("Left end");
     digitalWrite(LED, HIGH);
+    currentVal = 127;
   }
   
   if (Serial.available()) {
     inputVal = Serial.read();
 //    mySerial.write(inputVal);
     currentVal = previousVal - inputVal;
-    previousVal = inputVal;
+    
     mySerial.write(currentVal);
 
     if (currentVal > 0) {
@@ -80,6 +82,7 @@ void loop() {
       analogWrite(in1, 0);
       analogWrite(in2, 0);
     }
+    previousVal = currentVal;
   }
 }
 
