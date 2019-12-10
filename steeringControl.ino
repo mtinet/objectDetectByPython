@@ -5,13 +5,6 @@
 
 SoftwareSerial mySerial(2, 3);
 
-int previousVal = 127;
-int inputVal = 0;
-int currentVal = 0;
-
-int SR = 0;
-int SL = 0;
-
 const int buttonPinR = 4;
 const int buttonPinL = 5;
 const int LED = 13;
@@ -49,7 +42,6 @@ void loop() {
     
     //Serial.println("Right end");
     digitalWrite(LED, HIGH);
-    currentVal = 127;
   }
   if (buttonStateL == 1) {
     analogWrite(in1, 255);
@@ -60,54 +52,25 @@ void loop() {
     
     //Serial.println("Left end");
     digitalWrite(LED, HIGH);
-    currentVal = 127;
   }
   
   if (Serial.available()) {
-    inputVal = Serial.read();
-//    mySerial.write(inputVal);
-    currentVal = previousVal - inputVal;
+    char input; 
+    input = Serial.read();
     
-    mySerial.write(currentVal);
+    mySerial.write(input);
 
-    if (currentVal > 0) {
+    if (input == 'a') {
       analogWrite(in1, 0);
       analogWrite(in2, 255);
     }
-    if (currentVal < 0) {
+    if (input == 'b') {
       analogWrite(in1, 255);
       analogWrite(in2, 0);
     }
-    if (currentVal == 0) {
+    if (input == 'n') {
       analogWrite(in1, 0);
       analogWrite(in2, 0);
     }
-    previousVal = currentVal;
   }
-}
-
-void steeringRight(int SR) {
-  //Serial.print(", SR Val = ");
-  //Serial.println(SR);
-  analogWrite(in1, 255);
-  analogWrite(in2, 0);
-  delay(SR);
-  analogWrite(in1, 0);
-  analogWrite(in2, 0);
-}
-
-void steeringLeft(int SL) {
-  //Serial.print(", SL Val = ");
-  //Serial.println(SL);
-  analogWrite(in1, 0);
-  analogWrite(in2, 255);
-  delay(SL);
-  analogWrite(in1, 0);
-  analogWrite(in2, 0);
-}
-
-void steeringNeutral() {
-  analogWrite(in1, 0);
-  analogWrite(in2, 0);
-  //Serial.println("");
 }
