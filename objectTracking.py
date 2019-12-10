@@ -6,7 +6,6 @@ import imutils
 import time
 import cv2
 import serial
-import urllib.request
 
 #setup serial communication
 ser = serial.Serial(
@@ -27,6 +26,7 @@ args = vars(ap.parse_args())
 # 시리얼로 데이터를 보내는 주기에 사용하는 변수
 term = 0
 middlepoint = 0
+currentPoint = 250
 
 # extract the OpenCV version info
 (major, minor) = cv2.__version__.split(".")[:2]
@@ -107,12 +107,32 @@ while True:
 				(0, 255, 0), 2)
 
 			# check location and size of green box
-			print(x, y, w, h)
-			middlepoint = int((x+w/2)/2)
+			# print(x, y, w, h)
+			middlepoint = int(x+(w/2))
 			#middlepoint = str(middlepoint)
-			#middlepoint = (str(middlepoint)+'\n').encode("utf-8")
-			print('sended data : {}'.format(middlepoint), end='\n')
-			ser.write([middlepoint])
+
+			currentPoint = currentPoint - middlepoint
+
+			findDirection = currentPoint
+			print('findDirection : {}'.format(findDirection), end='\n')
+			print(type(findDirection))
+
+			if findDirection > 0:
+                                sendA = (str('a')+'\n').encode("utf-8")
+                                ser.write(sendA)
+			elif findDirection < 0:
+                                sendB = (str('b')+'\n').encode("utf-8")
+                                ser.write(sendB)
+			else :
+                                sendN = (str('n')+'\n').encode("utf-8")
+                                ser.write(sendN)
+                                
+			#print('sendA : {}'.format(sendA), end='\n')
+			#print(type(sendA))
+			#print('sendB : {}'.format(sendB), end='\n')
+			#print(type(sendB))
+			
+			currentPoint = middlepoint
 
 			# ckeck sending period
 			#term = term + 1
